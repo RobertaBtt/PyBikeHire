@@ -9,7 +9,7 @@ class BikeTestMethods(unittest.TestCase):
         self.assertEqual(2, Bike.Bike(2).get_id())
 
     def test_get_average_duration(self):
-        self.assertEqual(None, Bike.Bike(3).get_average_duration)
+        self.assertEqual(None, Bike.Bike(3).get_average_duration())
 
 
     def test_order_reporting_periods(self):

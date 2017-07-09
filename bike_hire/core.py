@@ -3,16 +3,17 @@ __author__ = 'roberta.btt@gmail.com'
 from datetime import datetime,date,timedelta
 import Bike
 import BikeHire
+import file_helper
+
 
 class BikeHireProject():
 
-
     def __init__(self, file_path):
+
         self.file_path = file_path
         self.bike_hire = BikeHire.BikeHireSingleton()
         self.print_average_journey_duration()
 
-    
     def print_average_journey_duration(self):
 
         self.__build_data()
@@ -21,7 +22,7 @@ class BikeHireProject():
         average_duration_total = timedelta()
 
         for key, bike in bike_dict.iteritems():
-            average_duration = bike.get_average_duration
+            average_duration = bike.get_average_duration()
             if average_duration is not None:
                 average_duration_total += average_duration
                 num_rides_to_avg += 1
@@ -30,43 +31,50 @@ class BikeHireProject():
             average_journey_duration = average_duration_total / num_rides_to_avg
         else:
             average_journey_duration = 0
-        print "The average journey duration is: " , average_journey_duration
+        print "The average journey duration is: ", average_journey_duration
+
 
     def __build_data(self):
+        """
+        Constructs data from .csv lines
+        :return:
+        """
+        try:
+            lines = file_helper.file_helper.read_lines(file_path)
 
-
-
-        bike_dict = {}
-        lines = self.read_lines()
-
-        for line in lines:
-            elements = line.split("," )
-
-            bike_id = elements[1]
-
-            bike = self.bike_hire.get_bike_by_id(bike_id)
-            if bike is not None:
-                if str(elements[2]) != '':
-                    bike.add_reporting_period('A' + str(elements[2]))
-                if str(elements[3]) != '':
-                    bike.add_reporting_period('D' + str(elements[3]))
-            else:
-                bike = Bike.Bike(bike_id)
-                if str(elements[2]) != '':
-                    bike.add_reporting_period('A' + str(elements[2]))
-                if str(elements[3]) != '':
-                    bike.add_reporting_period('D' + str(elements[3]))
-
-
+            for line in lines:
+                elements = line.split(",")
+                bike_id = elements[1]
+                bike = self.bike_hire.get_bike_by_id(bike_id)
+                bike = BikeHireProject._add_reporting_data(bike, elements, bike_id)
                 self.bike_hire.add_bike(bike)
+        except (RuntimeError):
+            print "Please check the format of the csv file"
 
-    def read_lines(self):
+    @staticmethod
+    def _add_reporting_data(bike, elements, bike_id=None):
+        """
 
-        with open(self.file_path) as f:
-            lines = f.readlines()
-        lines = [x.strip() for x in lines]
+        :param bike: The instance of the class Bike in which I'm adding list of reporting journey
+        :param elements: list of string
+        :param bike_id: id of a Bike
+        :return: a new instance of a Bike, or the same modified by adding reporting list
+        """
 
-        return lines
+        if bike is not None:
+            if str(elements[2]) != '':
+                bike.add_reporting_period('A' + str(elements[2]))
+            if str(elements[3]) != '':
+                bike.add_reporting_period('D' + str(elements[3]))
+        else:
+            bike = Bike.Bike(bike_id)
+            if str(elements[2]) != '':
+                bike.add_reporting_period('A' + str(elements[2]))
+            if str(elements[3]) != '':
+                bike.add_reporting_period('D' + str(elements[3]))
+
+        return bike
+
 
 #====================================
 if __name__ == '__main__':
