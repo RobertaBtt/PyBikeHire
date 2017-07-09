@@ -9,7 +9,7 @@ class BikeHireProject():
 
     def __init__(self, file_path):
         self.file_path = file_path
-        self.bike_hire = BikeHire.BikeHireSingleton({})
+        self.bike_hire = BikeHire.BikeHireSingleton()
         self.print_average_journey_duration()
 
     

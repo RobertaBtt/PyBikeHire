@@ -5,22 +5,26 @@ class BikeHireSingleton:
 
     class __BikeHireSingleton:
 
-        def __init__(self, arg):
+        def __init__(self):
             self.bike_dict = {}
-            self.val = arg
 
         def __str__(self):
-            return repr(self) + self.val
-        instance = None
+            return repr(self)
+    instance = None
 
-    def __init__(self, arg):
-        if not BikeHireSingleton.__BikeHireSingleton.instance:
-            BikeHireSingleton.instance = BikeHireSingleton.__BikeHireSingleton(arg)
-        else:
-            BikeHireSingleton.instance.val = arg
+    def __init__(self):
+        if not BikeHireSingleton.instance:
+            BikeHireSingleton.instance = BikeHireSingleton.__BikeHireSingleton()
+
 
     def __getattr__(self, name):
         return getattr(self.instance, name)
+
+    def add_bike(self, bike):
+        self.bike_dict[bike.get_id()] = bike
+
+    def get_bikes(self):
+        return self.bike_dict
 
     def get_bike_by_id(self, bike_id):
 
@@ -32,8 +36,5 @@ class BikeHireSingleton:
         else:
             return None
 
-    def add_bike(self, bike):
-        self.bike_dict[bike.get_id()] = bike
 
-    def get_bikes(self):
-        return self.bike_dict
+
