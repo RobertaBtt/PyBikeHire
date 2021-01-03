@@ -1,4 +1,4 @@
-__author__ = 'roberta.btt@gmail.com'
+__author__ = 'RobertaBtt'
 
 
 class BikeHireSingleton:

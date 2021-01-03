@@ -1,4 +1,4 @@
-__author__ = 'roberta.btt@gmail.com'
+__author__ = 'RobertaBtt'
 
 import datetime
 from datetime import timedelta
@@ -51,6 +51,6 @@ class Bike:
     def _order_reporting_periods(self):
         try:
             return sorted(self.reporting_period_list, key=lambda x: datetime.datetime.strptime(x[1:], '%Y%m%dT%H:%M:%S'))
-        except (ValueError):
-            print "Check data format (%Y%m%dT%H:%M:%S)"
+        except ValueError as ex:
+            print(ex, " Check data format (%Y%m%dT%H:%M:%S)")
             return None

@@ -1,9 +1,8 @@
-__author__ = 'roberta.btt@gmail.com'
-
+__author__ = 'RobertaBtt'
+import pathlib
 from datetime import datetime,date,timedelta
 import Bike
 import BikeHire
-import file_helper
 
 
 class BikeHireProject():
@@ -21,7 +20,7 @@ class BikeHireProject():
         num_rides_to_avg = 0
         average_duration_total = timedelta()
 
-        for key, bike in bike_dict.iteritems():
+        for key, bike in bike_dict.items():
             average_duration = bike.get_average_duration()
             if average_duration is not None:
                 average_duration_total += average_duration
@@ -31,7 +30,7 @@ class BikeHireProject():
             average_journey_duration = average_duration_total / num_rides_to_avg
         else:
             average_journey_duration = 0
-        print "The average journey duration is: ", average_journey_duration
+        print("The average journey duration is: ", average_journey_duration)
 
 
     def __build_data(self):
@@ -40,8 +39,9 @@ class BikeHireProject():
         :return:
         """
         try:
-            lines = file_helper.file_helper.read_lines(file_path)
-
+            with open(file_path) as f:
+                lines = f.readlines()
+            lines = [x.strip() for x in lines]
             for line in lines:
                 elements = line.split(",")
                 bike_id = elements[1]
@@ -49,7 +49,7 @@ class BikeHireProject():
                 bike = BikeHireProject._add_reporting_data(bike, elements, bike_id)
                 self.bike_hire.add_bike(bike)
         except (RuntimeError):
-            print "Please check the format of the csv file"
+            print("Please check the format of the csv file")
 
     @staticmethod
     def _add_reporting_data(bike, elements, bike_id=None):
@@ -78,6 +78,5 @@ class BikeHireProject():
 
 #====================================
 if __name__ == '__main__':
-    file_path = "data.csv"
-
+    file_path = str(pathlib.Path().absolute())+"/bike_hire/data.csv"
     bikeHireProject = BikeHireProject(file_path)
